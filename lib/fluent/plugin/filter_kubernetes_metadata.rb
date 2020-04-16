@@ -306,9 +306,8 @@ module Fluent::Plugin
       if @kubernetes_url.present?
         pod_metadata = get_pod_metadata(container_id, namespace_name, pod_name, create_time, batch_miss_cache)
 
-        if (pod_metadata.include? 'containers') && (pod_metadata['containers'].include? container_id) && !@skip_container_metadata
-          metadata['kubernetes']['container_image'] = pod_metadata['containers'][container_id]['image']
-          metadata['kubernetes']['container_image_id'] = pod_metadata['containers'][container_id]['image_id']
+        if (pod_metadata.include? 'containers') && (pod_metadata['containers'].include? container_name) && !@skip_container_metadata
+          metadata['kubernetes']['container_image'] = pod_metadata['containers'][container_name]['image']
         end
 
         metadata['kubernetes'].merge!(pod_metadata) if pod_metadata

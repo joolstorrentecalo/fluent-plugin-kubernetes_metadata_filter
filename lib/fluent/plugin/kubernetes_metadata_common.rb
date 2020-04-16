@@ -60,26 +60,7 @@ module KubernetesMetadata
       end
 
       # collect container informations
-      container_meta = {}
-      begin
-        pod_object['status']['containerStatuses'].each do|container_status|
-          # get plain container id (eg. docker://hash -> hash)
-          container_id = container_status['containerID'].sub /^[-_a-zA-Z0-9]+:\/\//, ''
-          unless @skip_container_metadata
-            container_meta[container_id] = {
-                'name' => container_status['name'],
-                'image' => container_status['image'],
-                'image_id' => container_status['imageID']
-            }
-          else
-            container_meta[container_id] = {
-                'name' => container_status['name']
-            }
-          end
-        end
-      rescue
-        log.debug("parsing container meta information failed for: #{pod_object['metadata']['namespace']}/#{pod_object['metadata']['name']} ")
-      end
+      container_meta = Hash[pod_object['spec']['containers'].map { |c| [c['name'], {'image' => c['image']}] }]
 
       kubernetes_metadata = {
           'namespace_name' => pod_object['metadata']['namespace'],
