@@ -48,7 +48,8 @@ class KubernetesMetadataFilterTest < Test::Unit::TestCase
       VCR.use_cassette('valid_kubernetes_api_server') do
         d = create_driver('
           kubernetes_url https://localhost:8443
-          watch false
+          watch_pods false
+          watch_namespaces false
         ')
         assert_equal('https://localhost:8443', d.instance.kubernetes_url)
         assert_equal(1000, d.instance.cache_size)

@@ -41,7 +41,9 @@ module Fluent::Plugin
     config_param :kubernetes_url, :string, default: nil
     config_param :cache_size, :integer, default: 1000
     config_param :cache_ttl, :integer, default: 60 * 60
-    config_param :watch, :bool, default: true
+    config_param :watch, :bool, default: nil # deprecated. If set overrides values of watch_pods and watch_namespaces
+    config_param :watch_pods, :bool, default: true
+    config_param :watch_namespaces, :bool, default: true
     config_param :apiVersion, :string, default: 'v1'
     config_param :client_cert, :string, default: nil
     config_param :client_key, :string, default: nil
@@ -174,6 +176,10 @@ module Fluent::Plugin
       require 'lru_redux'
       @stats = KubernetesMetadata::Stats.new
 
+      unless @watch.nil?
+        @watch_pods = @watch_namespaces = @watch
+      end
+
       if @de_dot && (@de_dot_separator =~ /\./).present?
         raise Fluent::ConfigError, "Invalid de_dot_separator: cannot be or contain '.'"
       end
@@ -270,10 +276,12 @@ module Fluent::Plugin
           raise Fluent::ConfigError, "Invalid Kubernetes API #{@apiVersion} endpoint #{@kubernetes_url}: #{kube_error.message}"
         end
 
-        if @watch
+        if @watch_pods
           pod_thread = Thread.new(self) { |this| this.set_up_pod_thread }
           pod_thread.abort_on_exception = true
+        end
 
+        if @watch_namespaces
           namespace_thread = Thread.new(self) { |this| this.set_up_namespace_thread }
           namespace_thread.abort_on_exception = true
         end
