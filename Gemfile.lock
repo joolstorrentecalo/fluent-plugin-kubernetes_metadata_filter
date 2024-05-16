@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    fluent-plugin-kubernetes_metadata_filter (2.4.5)
+    fluent-plugin-kubernetes_metadata_filter (2.4.6.pre.openai2)
       fluentd (>= 0.14.0, < 2)
       kubeclient (< 5)
       lru_redux
@@ -84,7 +84,7 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
-    rexml (3.2.4)
+    rexml (3.2.5)
     rr (1.2.1)
     rubocop (0.80.1)
       jaro_winkler (~> 1.5.1)
